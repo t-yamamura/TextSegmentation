@@ -2,6 +2,7 @@
 
 import argparse
 from sentence import Sentence
+from lcseg import LCseg
 from log import Log
 
 class TextSeg:
@@ -14,19 +15,25 @@ class TextSeg:
 		parser.add_argument('-i', '--input_file_path',
                             default="./dat/sample.dat",
                             help='File path of input text you want to segment.')
-		# text segmentation's parameter
+		# MeCab dic parameter
 		parser.add_argument('-d', '--dic',
                             default="",
                             help='Dictionary path for MeCab')
+		# text segmentation's parameter
+		parser.add_argument('-g', '--gap',
+                            default=11,
+                            help='連鎖を分割する空白の長さ(gap)')
+
 
 		# ...
 		self.options = parser.parse_args()
 		if self.options.dic != "":
 			self.options.dic = "-d " + self.options.dic
 
-
-
 	def read_input(self, input_file_path):
+		'''
+		入力ファイルを読み込み，文オブジェクト(Sentence)のリストを返す
+		'''
 		sentences = []
 		sentence_num = 0
 		f = open(input_file_path, 'r')
@@ -42,15 +49,17 @@ class TextSeg:
 		return sentences
 
 
-	def LCseg(self):
+	def execute_lexical_segmentation(self):
 		sentences = self.read_input(self.options.input_file_path)
 
+		lcseg = LCseg(self.options)
+		lexical_chains = lcseg.make_lexical_chain(sentences)
 
-		log = Log(sentences)
+		log = Log(sentences, lexical_chains)
 		log.execute()
 
 
 
 if __name__ == '__main__':
 	ts = TextSeg()
-	ts.LCseg()
+	ts.execute_lexical_segmentation()

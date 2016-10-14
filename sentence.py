@@ -45,3 +45,10 @@ class Sentence:
 			node = node.next
 
 		return morphs
+
+
+	def find_morph_in_sentence(self, surf):
+		for morph in self.morphs:
+			if morph.surf == surf:
+				return morph
+		return None

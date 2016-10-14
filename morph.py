@@ -8,12 +8,12 @@ class Morph:
 	'''
 
 	def __init__(self):
-		self.surf   = None # 表層
-		self.pos1   = None # 品詞1 (名詞,動詞,記号,etc)
-		self.pos2   = None # 品詞2 (数,サ変接続,一般,固有名詞,終助詞,係助詞,非自立,etc)
-		self.conj1  = None # 活用1 (サ変・-スル,etc)
-		self.conj2  = None # 活用2 (未然系,カ行促音便,etc)
-		self.base   = None # 原型
+		self.surf   = None # str 表層
+		self.pos1   = None # str 品詞1 (名詞,動詞,記号,etc)
+		self.pos2   = None # str 品詞2 (数,サ変接続,一般,固有名詞,終助詞,係助詞,非自立,etc)
+		self.conj1  = None # str 活用1 (サ変・-スル,etc)
+		self.conj2  = None # str 活用2 (未然系,カ行促音便,etc)
+		self.base   = None # str 原型
 
 	def read_morph(self):
 		return "{}\t{},{},{},{},{}".format(self.surf, self.pos1, self.pos2, self.conj1, self.conj2, self.base)
