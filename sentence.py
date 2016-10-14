@@ -24,12 +24,12 @@ class Sentence:
 				features = node.feature.split(',')
 
 				morph = Morph()
-				morph.surf = node.surface
-				morph.pos1 = features[0]
-				morph.pos2 = features[1]
+				morph.surf  = node.surface
+				morph.pos1  = features[0]
+				morph.pos2  = features[1]
 				morph.conj1 = features[4]
 				morph.conj2 = features[5]
-				morph.base = features[6]
+				morph.base  = features[6]
 
 				if morph.base == '*':
 					morph.base = morph.surf

@@ -2,6 +2,7 @@
 
 import argparse
 from sentence import Sentence
+from log import Log
 
 class TextSeg:
 	def __init__(self):
@@ -37,12 +38,15 @@ class TextSeg:
 				s.num    = sentence_num
 				s.morphs = s.make_mecab_result_nodes(self.options.dic)
 				sentences.append(s)
+		f.close()
 		return sentences
 
 
 	def LCseg(self):
 		sentences = self.read_input(self.options.input_file_path)
 
+		log = Log(sentences)
+		log.execute()
 
 
 

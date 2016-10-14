@@ -13,7 +13,10 @@ class Morph:
 		self.conj2  = None # 活用2 (未然系,カ行促音便,etc)
 		self.base   = None # 原型
 
-	# def is_stopword(self):
+	def read_morph(self):
+		return "{}\t{},{},{},{},{}".format(self.surf, self.pos1, self.pos2, self.conj1, self.conj2, self.base)
+
+	def is_stopword(self):
 		'''
 		オブジェクトがStopWordであるか判定
 		Stop WordであればTrue, そうでなければFalseを返す
@@ -22,7 +25,7 @@ class Morph:
 		1.品詞(名詞・動詞・形容詞)であるか
 		2.
 		'''
-		# if self.pos1
+		return False
 
 
 	# def get_all_features(self):
