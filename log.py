@@ -12,6 +12,9 @@ class Log:
 		self.write_mecab_result_nodes()
 
 	def write_mecab_result_nodes(self):
+		'''
+		MeCabによる解析結果をファイルに出力
+		'''
 		f = open('./log/mecab_result_nodes.log', 'w')
 
 		for sentence in self.sentences:

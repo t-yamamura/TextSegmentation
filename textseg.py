@@ -45,6 +45,7 @@ class TextSeg:
 	def LCseg(self):
 		sentences = self.read_input(self.options.input_file_path)
 
+
 		log = Log(sentences)
 		log.execute()
 

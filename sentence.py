@@ -15,6 +15,10 @@ class Sentence:
 
 
 	def make_mecab_result_nodes(self, dic):
+		'''
+		MeCabの解析結果を形態素オブジェクト(Morph)に保持し，Morphのリストを返す
+		'''
+
 		morphs = []
 		tagger = MeCab.Tagger(dic)
 		tagger.parse('')

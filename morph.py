@@ -1,5 +1,7 @@
 # coding: utf-8
 
+import re
+
 class Morph:
 	'''
 	形態素(Morph)
@@ -22,15 +24,22 @@ class Morph:
 		Stop WordであればTrue, そうでなければFalseを返す
 
 		[判定内容]
-		1.品詞(名詞・動詞・形容詞)であるか
-		2.
+		1.品詞が名詞・動詞・形容詞でなければStopWordと判定
+		2.形式名詞(ex.こと)であればStopWordと判定
+		3.ひらがな・カタカナの1文字の名詞であればStopWordと判定
 		'''
+
+		# 品詞が名詞・動詞・形容詞でなければStopWordと判定
+		if re.match(r"名詞|動詞|形容詞", self.pos1) is None:
+			return True
+
+		# 2.形式名詞(ex.こと)であればStopWordと判定
+		if re.search(r"もの|こと|よう|ところ|わけ|はず|つもり", self.surf) and self.pos1 == '名詞' and self.pos2 == '非自立':
+			return True
+
+		# 3.ひらがな・カタカナの1文字の名詞であればStopWordと判定
+		if re.match(r"[ぁ-んァ-ン]", self.surf) is not None and len(self.surf) == 1 and self.pos1 == '名詞':
+			return True
+
 		return False
 
-
-	# def get_all_features(self):
-	# 	'''
-	# 	形態素オブジェクトの主要なfeaturesを返す
-	# 	例) メニュー	メニュー,名詞,一般,抽象的実体,abstract_entity
-	# 	'''
-	# 	return "{}\t{},{},{},{},{}".format(self.surf, self.base, self.pos1, self.pos2, self.hypej, self.hypee)
