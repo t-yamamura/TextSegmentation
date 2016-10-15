@@ -23,10 +23,19 @@ class TextSeg:
 		parser.add_argument('-g', '--gap',
                             default=11,
                             help='連鎖を分割する空白の長さ(gap)')
-
+		parser.add_argument('-w', '--window',
+                            default=4,
+                            help='分析窓幅(window)')
+		parser.add_argument('-pl', '--p_limit',
+                            default=0.1,
+                            help='境界線信頼値の足きり閾値')
+		parser.add_argument('-a', '--alpha',
+                            default=0.5,
+                            help='仮定した境界線に対する閾値の限界')
 
 		# ...
 		self.options = parser.parse_args()
+		self.options.text_length = 0
 		if self.options.dic != "":
 			self.options.dic = "-d " + self.options.dic
 
@@ -46,6 +55,7 @@ class TextSeg:
 				s.morphs = s.make_mecab_result_nodes(self.options.dic)
 				sentences.append(s)
 		f.close()
+		self.options.text_length = len(sentences)
 		return sentences
 
 
@@ -54,6 +64,10 @@ class TextSeg:
 
 		lcseg = LCseg(self.options)
 		lexical_chains = lcseg.make_lexical_chain(sentences)
+
+		lexical_cohesion_scores = lcseg.calc_lexical_cohesion_score(lexical_chains)
+
+		borders = lcseg.const_segment_info(lexical_cohesion_scores)
 
 		log = Log(sentences, lexical_chains)
 		log.execute()
