@@ -3,7 +3,8 @@
 import math
 from lexical_chain import LexicalChain
 from lexical_chain import AnalysisWindow
-from segment_border import SegmentBorder
+from segment import Border
+from segment import Segment
 
 class LCseg:
 	'''
@@ -148,13 +149,14 @@ class LCseg:
 		return lexical_cohesion_scores
 
 
-	def const_segment_info(self, lexical_cohesion_scores):
+	def const_segment_borders_info(self, lexical_cohesion_scores):
 
 		'''
 		分割する境界線の候補を選定
 		各境界線に対して，境界線信頼値を計算し，閾値以上のものを選定
 		'''
 		sb_cands = []
+		sb_cands_num = 0
 		sb_cands_pmi_sum = 0
 		for i in range(0, len(lexical_cohesion_scores) - 2):
 
@@ -162,15 +164,17 @@ class LCseg:
 			p_mi = (lexical_cohesion_scores[i] + lexical_cohesion_scores[i+2] - lexical_cohesion_scores[i+1] * 2) / 2
 
 			# 境界線情報を保持
-			sb = SegmentBorder()
+			sb = Border()
 			sb.before = i + self.options.window
 			sb.after  = i + self.options.window + 1
 			sb.score  = p_mi
-			sb.cand   = True
+			sb.cand   = False
+			sb_cands.append(sb)
 
 			# 境界線信頼値の閾値以上の境界候補のみを選定
 			if sb.score >= self.options.p_limit:
-				sb_cands.append(sb)
+				sb.cand = True
+				sb_cands_num += 1
 				sb_cands_pmi_sum += sb.score
 
 		'''
@@ -178,11 +182,55 @@ class LCseg:
 		足きりで残った境界線に対して，最終的な境界線信頼値を計算
 		'''
 		# 分割する境界線が存在しない場合
-		if len(sb_cands) == 0:
+		if sb_cands_num == 0:
 			print("分割する境界線が存在しません.")
-			exit(0)
+			return None
 		else:
 			# 境界線信頼値の平均を計算
-			sb_cands_pmi_ave = sb_cands_pmi_sum / len(sb_cands)
+			sb_cands_pmi_ave = sb_cands_pmi_sum / sb_cands_num
 			# 標準偏差の計算
 			disp = 0
+			for sb in sb_cands:
+				if sb.cand:
+					disp += (sb.score - sb_cands_pmi_ave) ** 2
+			disp /= sb_cands_num
+			std_dev = math.sqrt(disp)
+
+			# 閾値の計算
+			threshold = sb_cands_pmi_ave - self.options.alpha * std_dev
+
+			# 閾値を用いて最終的な境界線の選抜
+			for sb in sb_cands:
+				if sb.score < threshold:
+					sb.cand = False
+
+			return sb_cands
+
+
+	def const_segments_info(self, borders):
+		segments = []
+		borders = [border for border in borders if border.cand]
+		start = 0
+		for border in borders:
+			s = Segment(start=start, end=border.before, length=border.before-start+1)
+			segments.append(s)
+			start = border.after
+		else:
+			s = Segment(start=border.after, end=self.options.text_length-1, length=self.options.text_length-border.after)
+			segments.append(s)
+
+		return segments
+
+	def segment_sentences(self, borders, sentences):
+		segmented_sentences = []
+		segment_text = ''
+		for sentence in sentences:
+			if sentence.num in [b.after for b in borders if b.cand]:
+				segmented_sentences.append(segment_text)
+				segment_text = ''
+			segment_text += sentence.surf
+		else:
+			if segment_text != '':
+				segmented_sentences.append(segment_text)
+
+		return segmented_sentences

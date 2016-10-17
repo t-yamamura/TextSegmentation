@@ -54,6 +54,7 @@ class TextSeg:
 				s.num    = sentence_num
 				s.morphs = s.make_mecab_result_nodes(self.options.dic)
 				sentences.append(s)
+				sentence_num += 1
 		f.close()
 		self.options.text_length = len(sentences)
 		return sentences
@@ -67,9 +68,13 @@ class TextSeg:
 
 		lexical_cohesion_scores = lcseg.calc_lexical_cohesion_score(lexical_chains)
 
-		borders = lcseg.const_segment_info(lexical_cohesion_scores)
+		borders = lcseg.const_segment_borders_info(lexical_cohesion_scores)
 
-		log = Log(sentences, lexical_chains)
+		segments = lcseg.const_segments_info(borders)
+
+		segmented_sentences = lcseg.segment_sentences(borders, sentences)
+
+		log = Log(sentences, lexical_chains, borders, segments, segmented_sentences)
 		log.execute()
 
 

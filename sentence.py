@@ -12,6 +12,7 @@ class Sentence:
 		self.surf   = None # str  表層
 		self.num    = None # int  文番号
 		self.morphs = None # list 形態素
+		# self.segnum = None # int  セグメント番号
 
 
 	def make_mecab_result_nodes(self, dic):
