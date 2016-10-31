@@ -65,5 +65,5 @@ class Log:
 		f = open('log/segmented_sentences.log', 'w')
 
 		for sentence in self.segmented_sentences:
-			f.write("{}\n=== SEGMENT ===\n".format(sentence))
+			f.write("{}\n=== SEGMENT ===\n\n".format(sentence))
 		f.close()

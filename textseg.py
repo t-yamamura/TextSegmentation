@@ -24,7 +24,7 @@ class TextSeg:
                             default=11,
                             help='連鎖を分割する空白の長さ(gap)')
 		parser.add_argument('-w', '--window',
-                            default=4,
+                            default=2,
                             help='分析窓幅(window)')
 		parser.add_argument('-pl', '--p_limit',
                             default=0.1,
@@ -74,6 +74,7 @@ class TextSeg:
 
 		segmented_sentences = lcseg.segment_sentences(borders, sentences)
 
+		# ログの書き出し
 		log = Log(sentences, lexical_chains, borders, segments, segmented_sentences)
 		log.execute()
 

@@ -140,6 +140,7 @@ class LCseg:
 			window_vecsize = math.sqrt(wl.vecsize) * math.sqrt(wr.vecsize)
 
 			# ２つの分析窓のコサイン類似度を計算
+			window_cosine_sim = 0
 			if window_vecsize != 0:
 				window_cosine_sim = window_dot / window_vecsize
 
@@ -228,7 +229,7 @@ class LCseg:
 			if sentence.num in [b.after for b in borders if b.cand]:
 				segmented_sentences.append(segment_text)
 				segment_text = ''
-			segment_text += sentence.surf
+			segment_text += sentence.surf + "\n"
 		else:
 			if segment_text != '':
 				segmented_sentences.append(segment_text)
