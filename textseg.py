@@ -21,19 +21,22 @@ class TextSeg:
                             help='Dictionary path for MeCab')
 		# text segmentation's parameter
 		parser.add_argument('-g', '--gap',
+                            type=int,
                             default=11,
                             help='連鎖を分割する空白の長さ(gap)')
 		parser.add_argument('-w', '--window',
+                            type=int,
                             default=2,
                             help='分析窓幅(window)')
 		parser.add_argument('-pl', '--p_limit',
+                            type=float,
                             default=0.1,
                             help='境界線信頼値の足きり閾値')
 		parser.add_argument('-a', '--alpha',
+                            type=float,
                             default=0.5,
                             help='仮定した境界線に対する閾値の限界')
 
-		# ...
 		self.options = parser.parse_args()
 		self.options.text_length = 0
 		if self.options.dic != "":
@@ -64,15 +67,14 @@ class TextSeg:
 		sentences = self.read_input(self.options.input_file_path)
 
 		lcseg = LCseg(self.options)
-		lexical_chains = lcseg.make_lexical_chain(sentences)
-
+		lexical_chains          = lcseg.make_lexical_chain(sentences)
 		lexical_cohesion_scores = lcseg.calc_lexical_cohesion_score(lexical_chains)
+		borders                 = lcseg.const_segment_borders_info(lexical_cohesion_scores)
+		segments                = lcseg.const_segments_info(borders)
+		segmented_sentences     = lcseg.segment_sentences(borders, sentences)
 
-		borders = lcseg.const_segment_borders_info(lexical_cohesion_scores)
-
-		segments = lcseg.const_segments_info(borders)
-
-		segmented_sentences = lcseg.segment_sentences(borders, sentences)
+		for ss in segmented_sentences:
+			print("{}\n=== SEGMENT ===\n".format(ss))
 
 		# ログの書き出し
 		log = Log(sentences, lexical_chains, borders, segments, segmented_sentences)
