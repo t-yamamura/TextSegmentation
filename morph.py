@@ -7,13 +7,21 @@ class Morph:
     形態素(Morph)
     """
 
-    def __init__(self):
-        self.surf = None  # str 表層
-        self.pos1 = None  # str 品詞1 (名詞,動詞,記号,etc)
-        self.pos2 = None  # str 品詞2 (数,サ変接続,一般,固有名詞,終助詞,係助詞,非自立,etc)
-        self.conj1 = None  # str 活用1 (サ変・-スル,etc)
-        self.conj2 = None  # str 活用2 (未然系,カ行促音便,etc)
-        self.base = None  # str 原型
+    def __init__(self, surf, pos1, pos2, conj1, conj2, base):
+        """
+        :param str surf: 表層
+        :param str pos1: 品詞1 (名詞,動詞,記号,etc)
+        :param str pos2: 品詞2 (数,サ変接続,一般,固有名詞,終助詞,係助詞,非自立,etc)
+        :param str conj1: 活用1 (サ変・-スル,etc)
+        :param str conj2: 活用2 (未然系,カ行促音便,etc)
+        :param str base: 原型
+        """
+        self.surf = surf
+        self.pos1 = pos1
+        self.pos2 = pos2
+        self.conj1 = conj1
+        self.conj2 = conj2
+        self.base = base
 
     def read_morph(self):
         return "{}\t{},{},{},{},{}".format(self.surf, self.pos1, self.pos2, self.conj1, self.conj2, self.base)
